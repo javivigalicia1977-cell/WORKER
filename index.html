@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POTISSE Workshop Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/potisse.css?v=2">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-tag">POTISSE</div>
+        <div class="brand-title">Workshop Tools</div>
+      </div>
+      <nav class="nav">
+        <div class="nav-group">
+          <div class="nav-group-heading">Catalog</div>
+          <a href="#/post-curation" class="nav-item" data-tab="post-curation">Post curation</a>
+          <a href="#/products" class="nav-item" data-tab="products">Products</a>
+          <a href="#/stock" class="nav-item" data-tab="stock">Stock</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-heading">Members</div>
+          <a href="#/members" class="nav-item" data-tab="members">Members</a>
+          <a href="#/quiet-list" class="nav-item" data-tab="quiet-list">Quiet List</a>
+          <a href="#/nfc-cards" class="nav-item" data-tab="nfc-cards">NFC cards</a>
+          <a href="#/candidates" class="nav-item" data-tab="candidates">Candidates</a>
+          <a href="#/incidences" class="nav-item" data-tab="incidences">Incidences <span class="nav-count" id="inc-badge"></span></a>
+          <a href="#/emails" class="nav-item" data-tab="emails">Emails</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-heading">System</div>
+          <a href="#/orders" class="nav-item" data-tab="orders">Orders</a>
+          <a href="#/access-alerts" class="nav-item" data-tab="access-alerts">Access alerts <span class="nav-count" id="alert-badge"></span></a>
+          <a href="#/health" class="nav-item" data-tab="health">Health</a>
+          <a href="#/timeline" class="nav-item" data-tab="timeline">Timeline</a>
+          <a href="#/domain-ssl" class="nav-item" data-tab="domain-ssl">Domain / SSL</a>
+          <a href="#/settings" class="nav-item" data-tab="settings">Settings</a>
+        </div>
+      </nav>
+    </aside>
+    <main class="main">
+      <div id="tab-root">
+        <!-- Router monta aqui el contenido de la tab activa -->
+      </div>
+    </main>
+  </div>
+  <script>window.SHOPIFY_STORE_DOMAIN = 'potisse-shop.myshopify.com';</script>
+  <script type="module" src="/js/app.js?v=14"></script>
+</body>
+</html>
