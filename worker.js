@@ -9066,10 +9066,6 @@ __name(handleAdminNfcPracticeCleanup, "handleAdminNfcPracticeCleanup");
       return handleAdminStockItemBobinasSummary(request, env, url, stockItemBobinasSummaryMatch[1]);
     }
 
-    if (url.pathname === "/api/admin/stock/items-with-pending-replenishment" && request.method === "GET") {
-      return handleAdminStockItemsWithPendingReplenishment(request, env, url);
-    }
-
     const stockItemBobinasNextLabelMatch = url.pathname.match(/^\/api\/admin\/stock\/items\/([^\/]+)\/bobinas\/next-label$/);
     if (stockItemBobinasNextLabelMatch && request.method === "GET") {
       return handleAdminStockItemBobinasNextLabel(request, env, url, stockItemBobinasNextLabelMatch[1]);
@@ -13382,26 +13378,8 @@ async function handleAdminStockItemAdjust(request, env, url, itemSku) {
     console.error('Timeline error:', tlErr);
   }
 
-  // AUTOLIMPIEZA pending_replenishment cubiertos por reposicion
-  let clearedCount = 0;
-  const delta = newStock - oldStock;
-  if (delta > 0 && Array.isArray(item.pending_replenishment) && item.pending_replenishment.length > 0) {
-    let cumulativeAdded = 0;
-    const toKeep = [];
-    for (const entry of item.pending_replenishment) {
-      const entryAmount = parseFloat(entry.amount) || 0;
-      if (cumulativeAdded + entryAmount <= delta) {
-        cumulativeAdded += entryAmount;
-        clearedCount++;
-      } else {
-        toKeep.push(entry);
-      }
-    }
-    item.pending_replenishment = toKeep;
-  }
-
   await env.POTISSE_NFC.put(`stock_item_${itemSku}`, JSON.stringify(item));
-  return jsonResponse({ ok: true, item, cleared_pending_replenishment: clearedCount });
+  return jsonResponse({ ok: true, item });
 }
 
 async function handleAdminStockItemWaste(request, env, url, itemSku) {
@@ -16138,31 +16116,6 @@ __name(handleAdminStockItemBobinasList, "handleAdminStockItemBobinasList");
       return jsonResponse({ ok: true, sku, next: nextLabel, formatted: "#" + String(nextLabel).padStart(3, "0") });
     }
     __name(handleAdminStockItemBobinasNextLabel, "handleAdminStockItemBobinasNextLabel");
-
-async function handleAdminStockItemsWithPendingReplenishment(request, env, url) {
-  if (url.searchParams.get("admin") !== env.ADMIN_KEY) return jsonResponse({ error: "unauthorized" }, 401);
-  const list = await env.POTISSE_NFC.list({ prefix: "stock_item_", limit: 1000 });
-  const items = [];
-  for (const k of list.keys) {
-    const raw = await env.POTISSE_NFC.get(k.name);
-    if (!raw) continue;
-    try {
-      const item = JSON.parse(raw);
-      if (Array.isArray(item.pending_replenishment) && item.pending_replenishment.length > 0) {
-        const totalAmount = item.pending_replenishment.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
-        items.push({
-          sku: item.sku,
-          name: item.name || item.sku,
-          unit: item.unit || 'units',
-          pending_count: item.pending_replenishment.length,
-          total_pending_amount: Math.round(totalAmount * 100) / 100
-        });
-      }
-    } catch (e) {}
-  }
-  return jsonResponse({ ok: true, count: items.length, items });
-}
-__name(handleAdminStockItemsWithPendingReplenishment, "handleAdminStockItemsWithPendingReplenishment");
 
 async function handleAdminStockItemBobinasSummary(request, env, url, sku) {
   sku = decodeURIComponent(sku);
